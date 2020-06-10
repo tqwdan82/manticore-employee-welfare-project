@@ -1,0 +1,67 @@
+<script src="web/scripts/collectionSelfPage.js"></script>
+<link href="web/styles/collection.css" rel="stylesheet">
+<%- include('collectionNav'); -%>
+<div id="overlay">
+  <div class="text text-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<div class="form-signin" ng-app="collectionSP1App" ng-controller="collectionSP1Ctrl">
+  <form ng-show="!showSuccess">
+    <h3 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">Collectibles</h3>
+    <div ng-show="!hasCollectibles">
+      <span>You do not have anything to collect</span>
+    </div>
+    <div ng-show="hasCollectibles">
+      <div class="form-group">
+        <label for="collectibleItemSelect">Select items to collect</label>
+        <select multiple class="form-control" id="collectibleItemSelect" ng-model="data.multipleSelect" ng-change="reflectChange()">
+          <!-- <option>1 x Reusable Mask</option> -->
+          <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
+        </select>
+      </div>
+      <div class="form-group" ng-show="showAck">
+        <hr>
+        <h5 class="h5 mb-3 font-weight-normal" style="margin-top: 15px;">Please sign to acknowledge before collection</h5>
+        <label for="sig-canvas">Signature</label>
+        <canvas id="sig-canvas" height="160">
+          Browser not supported
+        </canvas>
+        <button type="button" class="btn btn-sm btn-primary mb-6" style="margin-top: 10px;" ng-click="clearSignature()">Clear</button>
+        <button type="button" class="btn btn-sm btn-primary mb-6" style="margin-top: 10px;" ng-click="acknowledge()">Acknowledge</button>
+      </div>
+    </div>
+  </form>
+
+  <form ng-show="showSuccess">
+    <h3 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">You may collect your following items</h3>
+    <ul class="list-group list-group-horizontal-xl">
+      <li ng-repeat="option in data.multipleSelectDisplay" class="list-group-item">{{option}}</li>
+    </ul>
+  </form>
+</div>
+
+<!-- Invalid ack modal -->
+<div class="modal fade bd-example-modal-lg" id="invalidAckModal" tabindex="-2" role="dialog" aria-labelledby="invalidAckModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="invalidAckModalTitle">Invalid Acknowledgement</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+              Please sign for Acknowledgement
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script src="web/scripts/esign.js"></script>
+
+

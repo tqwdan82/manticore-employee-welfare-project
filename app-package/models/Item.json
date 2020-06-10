@@ -1,0 +1,36 @@
+{
+    "timestamps": true,
+    "paranoid": true,
+    "columns": [
+        {
+            "columnName": "id",
+            "columnDataType": "UUID",
+            "isPrimaryKey": true
+        },
+        {
+            "columnName": "ItemName",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "ItemDescription",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "ItemDistrStartDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "ItemDistrEndDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "ItemCount",
+            "columnDataType": "DECIMAL",
+            "isPrimaryKey": false
+        }
+    ]
+}

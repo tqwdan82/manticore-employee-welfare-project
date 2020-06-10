@@ -1,0 +1,34 @@
+
+<script src="web/scripts/collectionOpt.js"></script>
+<link href="web/styles/collection.css" rel="stylesheet">
+<form class="form-signin" class="form-signin" ng-app="collectionOptApp" ng-controller="collectionOptCtrl">
+    <i class="fas fa-hands-helping" style="font-size: 72px; color: rgb(12, 54, 97);"></i><br/>
+    <h1 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">Wellfare Collection Service</h1>
+    <p>
+      Hi {{empName}}
+    </p>
+    <p>
+      <!-- <button class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;" type="submit">Self Collection</button> -->
+      <a href="/web?action=collectionSelfPage" class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;">
+        Self Collect
+      </a>
+    </p>
+    <p>
+      <!-- <button class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;" type="submit">Assist Collection</button> -->
+      <a href="/web?action=collectionAssistPage" class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;">
+        Help Collect
+      </a>
+    </p>
+    <p>
+      <!-- <button class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;" type="submit">History</button> -->
+      <a href="/web?action=history" class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;">
+        History
+      </a>
+    </p>
+    <p>
+      <a href="#" class="btn btn-lg btn-primary btn-block" style="margin-top: 15px;" ng-click="leave()">
+        Leave
+      </a>
+    </p>
+    <p class="mt-5 mb-3 text-muted">Powered by Manti-Core</p>
+</form>

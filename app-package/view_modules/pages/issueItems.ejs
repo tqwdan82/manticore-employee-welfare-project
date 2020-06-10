@@ -1,0 +1,280 @@
+<script src="web/scripts/issueItems.js"></script>
+<div id="overlay">
+    <div class="text text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+</div>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Issue Items</h1>
+</div>
+
+<div ng-app="issueItemApp" ng-controller="issueItemCtrl">
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="form-group col-lg-4 row" >
+                <label for="filterType" class="col-sm-2 col-form-label">Filter</label>
+                <select class="form-control col-sm-10" id="filterType" ng-model="filterType">
+                    <option>Employee Number</option>
+                    <option>Item</option>
+                </select>
+            </div>
+            <div class="form-group col-lg-4 row" >
+                <label for="filterValue" class="col-sm-2 col-form-label">By</label>
+                <input class="form-control col-sm-10" name="filterValue" ng-model="filterValue" ng-change="reflectChange()">
+            </div>
+            <div class="form-group col-lg-4" >
+                <p class="text-right">
+                    <a href="#" class="btn btn-primary btn-icon-split btn-sm"  ng-click="delete(key)"  data-toggle="modal" data-target="#newIssueModal">
+                        <span class="icon text-white-50">
+                            <i class="far fa-plus-square"></i>
+                        </span>
+                        <span class="text">New Issue</span>
+                    </a>
+                    <a href="#" class="btn btn-primary btn-icon-split btn-sm"  ng-click="delete(key)"  data-toggle="modal" data-target="#uploadIssueModal">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        <span class="text">Upload</span>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-bordered dataTable table-striped table-hover" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" >
+            <thead>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Item Name</th>
+                    <th>No. Item Issued</th>
+                    <th>Collection Type</th>
+                    <th>Date of Collection</th>
+                    <th>Remarks</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="itemIssue in filteredList">
+                    <td>{{itemIssue.empName}}</td>
+                    <td>{{itemIssue.itemName}}</td>
+                    <td>{{itemIssue.count}}</td>
+                    <td>{{itemIssue.collectType}}</td>
+                    <td>{{itemIssue.collectDate}}</td>
+                    <td>{{itemIssue.remarks}}</td>
+                    <td>
+                        <a href="#" class="btn btn-warning btn-icon-split btn-sm"  ng-show="!itemIssue.isCollected" ng-click="edit(itemIssue.id)"  data-toggle="modal" data-target="#editIssueModal">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-pen"></i>
+                            </span>
+                        </a>
+                        <a href="#" class="btn btn-primary btn-icon-split btn-sm"  ng-show="itemIssue.empAcked && !itemIssue.isCollected" ng-click="acknowledge(itemIssue.id)">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-check"></i>
+                            </span>
+                        </a>
+                        <a href="#" class="btn btn-danger btn-icon-split btn-sm"  ng-show="!itemIssue.isCollected" ng-click="deleting(itemIssue.id)" data-toggle="modal" data-target="#deleteItemModal">
+                            <span class="icon text-white-50">
+                            <i class="fas fa-trash"></i>
+                            </span>
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Employee Name</th>
+                    <th>Item Name</th>
+                    <th>No. Item Collected</th>
+                    <th>Collection Type</th>
+                    <th>Date of Collection</th>
+                    <th>Remarks</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <!-- New Issue Modal -->
+    <div class="modal fade bd-example-modal-lg" id="newIssueModal" tabindex="-2" role="dialog" aria-labelledby="newIssueModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="newIssueModalTitle">New Issue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Item*</label>
+                                <!-- <input class="form-control" name="itemIssue" ng-model="itemIssue"> -->
+                                <select class="form-control" id="collectibleItemSelect" ng-model="new.ItemID" ng-change="reflectChange()">
+                                    <option ng-repeat="item in data.allItems" value="{{item.id}}">{{item.ItemName}} ({{item.ItemCount}})</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Employee*</label>
+                                <!-- <input class="form-control" name="empIssue" ng-model="empIssue"> -->
+                                <select class="form-control" id="collectibleItemSelect" ng-model="new.EmpID" ng-change="reflectChange()">
+                                    <option ng-repeat="emp in data.allEmployees" value="{{emp.id}}">{{emp.EmpName}} ({{emp.EmpID}})</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Issue Count*</label>
+                                <input class="form-control" name="itemCount" ng-model="new.Count">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label>Remarks</label>
+                                <textarea rows="3" class="form-control" name="newissueremarks" ng-model="new.Remarks"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="create()" data-dismiss="modal">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Issue Modal -->
+    <div class="modal fade bd-example-modal-lg" id="editIssueModal" tabindex="-2" role="dialog" aria-labelledby="editIssueModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="editIssueModalTitle">Edit Issue</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Item</label>
+                                <input class="form-control" name="itemIssue" ng-model="editing.itemName" readonly>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Employee</label>
+                                <input class="form-control" name="empIssue" ng-model="editing.empName" readonly>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label>Issue Count*</label>
+                                <input class="form-control" name="itemCount" ng-model="editing.count">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-lg-12">
+                                <label>Remarks</label>
+                                <textarea rows="3" class="form-control" name="issueremarks" ng-model="editing.remarks"></textarea>
+                            </div>
+                        </div>
+                        <hr ng-show="!editing.empAcked">
+                        <div ng-show="!editing.empAcked" class="d-sm-flex align-items-center justify-content-between mb-4">
+                            <h5 class="h5 mb-0 text-gray-800">Issue</h5>
+                        </div>
+                        <div ng-show="!editing.empAcked" class="form-check">
+                            <input class="form-check-input" type="checkbox" value="" ng-model="editing.issueNow" id="issueNowCheck">
+                            <label class="form-check-label" for="issueNowCheck">
+                              Issue Now
+                            </label>
+                        </div>
+                        <br>
+                        <div ng-show="!editing.empAcked" class="row" ng-show="editing.issueNow">
+                            <div class="form-group col-md-6">
+                                <label>Issue Date*</label>
+                                <input class="form-control" type="text" datepicker="" ng-model="editing.issueDate" dp-format="yyyy-m-d" />
+                            </div>
+                        </div>
+                        <div ng-show="!editing.empAcked" class="row" ng-show="editing.issueNow">
+                            <div class="form-group col-md-6">
+                                <label>Collection Type</label>
+                                <select class="form-control" id="collectType" ng-model="editing.collectType" ng-change="reflectCollectionTypeChange()">
+                                    <option>Self</option>
+                                    <option>Assist</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-6" ng-show="editing.assistCollection">
+                                <label>Assisting Employee*</label>
+                                <select class="form-control" id="collectibleItemSelect" ng-model='editing.assistEmpID'>
+                                    <option ng-repeat="emp in data.allEmployees" value="{{emp.id}}">{{emp.EmpName}} ({{emp.EmpID}})</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="update()" data-dismiss="modal">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upload Issue Modal -->
+    <div class="modal fade bd-example-modal-lg" id="uploadIssueModal" tabindex="-2" role="dialog" aria-labelledby="uploadIssueModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="uploadIssueModalTitle">Upload New Issues</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                <p>
+                                    Upload CSV file with new issues
+                                    <a href="#" class="btn btn-primary btn-icon-split btn-sm">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-download"></i>
+                                        </span>
+                                        <span class="text">Download Sample</span>
+                                    </a>
+                                </p>
+                            </div>
+                            <div class="form-group col-md-12">
+                                <input type="file" id="customFile" class="custom-file-input" file-model="issFile">
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" ng-click="uploadFile()" data-dismiss="modal">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirm modal -->
+    <div class="modal fade bd-example-modal-lg" id="deleteItemModal" tabindex="-2" role="dialog" aria-labelledby="deleteItemModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="deleteItemModalTitle">Delete Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    Confirm delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" ng-click="delete()" data-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

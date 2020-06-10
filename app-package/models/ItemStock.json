@@ -1,0 +1,26 @@
+{
+    "timestamps": true,
+    "paranoid": false,
+    "columns": [
+        {
+            "columnName": "id",
+            "columnDataType": "UUID",
+            "isPrimaryKey": true
+        },
+        {
+            "columnName": "ItemId",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "StockMovementType",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "StockMovementCount",
+            "columnDataType": "DECIMAL",
+            "isPrimaryKey": false
+        }
+    ]
+}

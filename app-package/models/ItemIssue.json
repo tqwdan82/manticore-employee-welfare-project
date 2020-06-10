@@ -1,0 +1,56 @@
+{
+    "timestamps": true,
+    "paranoid": false,
+    "columns": [
+        {
+            "columnName": "id",
+            "columnDataType": "UUID",
+            "isPrimaryKey": true
+        },
+        {
+            "columnName": "ItemID",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpID",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "Count",
+            "columnDataType": "FLOAT",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "OnBehalfEmpID",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "Acknowledgement",
+            "columnDataType": "BLOB",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "AckDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "Remarks",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "OfficerAck",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "OfficerAckDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        }
+    ]
+}

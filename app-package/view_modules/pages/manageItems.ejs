@@ -1,0 +1,226 @@
+<script src="web/scripts/manageItems.js"></script>
+<div id="overlay">
+    <div class="text text-center">
+      <div class="spinner-border" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
+</div>
+<div class="d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0 text-gray-800">Distribution Items</h1>
+</div>
+
+<div ng-app="mgmItemApp" ng-controller="mgmItemCtrl">
+    <div class="table-responsive">
+        <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" >
+            <thead>
+              <tr>
+                <th>Item Name</th>
+                <th>Description</th>
+                <th>Total Stock Count</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tfoot>
+              <tr>
+                <th>Item Name</th>
+                <th>Description</th>
+                <th>Total Stock Count</th>
+                <th></th>
+              </tr>
+            </tfoot>
+            <tbody>
+                <tr ng-repeat="item in data.items">
+                <td>{{item.ItemName}}</td>
+                <td>
+                  <p>
+                    {{item.ItemDescription}}
+                    <br/>
+                    <span>
+                      <span ><b>Start Date</b> : {{item.ItemDistrStartDate}}<br/></span>
+                    </span>
+                    <span>
+                        <span ><b>End Date</b> : {{item.ItemDistrEndDate}}<br/></span>
+                      </span>
+                  </p>
+                </td>
+                <td>
+                  <p>
+                    <span><b>{{item.ItemCount}}</b></span>
+                    <br/>
+                  </p>
+                </td>
+                <td>
+                  <!-- <button ng-click="edit()">Reduce</button> -->
+                  <a href="#" class="btn btn-warning btn-icon-split btn-sm"  ng-click="setReductionPointer(item.id)"  data-toggle="modal" data-target="#reduceItemStockModal">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-minus-square"></i>
+                    </span>
+                    <span class="text">Reduce</span>
+                  </a>
+                  <!-- <button ng-click="delete(key)">Replenish</button> -->
+                  <a href="#" class="btn btn-success btn-icon-split btn-sm"  ng-click="setReplenishPointer(item.id)" data-toggle="modal" data-target="#replenishItemStockModal">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-plus-square"></i>
+                    </span>
+                    <span class="text">Replenish</span>
+                  </a>
+                  <a href="#" class="btn btn-primary btn-icon-split btn-sm" ng-click="getHistory(item.id)" data-toggle="modal" data-target="#itemStockHistoryModal">
+                    <span class="icon text-white-50">
+                        <i class="fas fa-clipboard-list"></i>
+                    </span>
+                    <span class="text">History</span>
+                  </a>
+                  <a href="#" class="btn btn-danger btn-icon-split btn-sm"  ng-click="deleting(item.id)" data-toggle="modal" data-target="#deleteItemModal">
+                    <span class="icon text-white-50">
+                      <i class="fas fa-trash"></i>
+                    </span>
+                    <span class="text">Delete</span>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- History Modal -->
+    <div class="modal fade bd-example-modal-lg" id="itemStockHistoryModal" tabindex="-2" role="dialog" aria-labelledby="itemStockHistoryModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="itemStockHistoryModalTitle">Item Stock History</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div id="modaloverlay">
+                        <div class="text text-center">
+                          <div class="spinner-border" role="status">
+                            <span class="sr-only">Loading...</span>
+                          </div>
+                        </div>
+                    </div>
+                    <table class="table table-bordered dataTable" id="historyTable" width="100%" cellspacing="0" role="grid" aria-describedby="historyTable_info" >
+                        <thead>
+                            <tr>
+                                <th>Action Date</th>
+                                <th>Action</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="history in itemHistory">
+                                <td>{{history.createdAt | date:'yyyy-M-dd' }}</td>
+                                <td>{{history.StockMovementType}}</td>
+                                <td>{{history.StockMovementCount}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reduce Modal -->
+    <div class="modal fade bd-example-modal-lg" id="reduceItemStockModal" tabindex="-2" role="dialog" aria-labelledby="reduceItemStockModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="reduceItemStockModalTitle">Reduce Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Reduce by*</label>
+                                <input class="form-control" name="reduceStockCount" ng-model="data.reduceCount">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="reduce()" data-dismiss="modal">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reduce Error Modal -->
+    <div class="modal fade bd-example-modal-lg" id="reduceErrorModal" tabindex="-2" role="dialog" aria-labelledby="reduceErrorModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="reduceErrorModalTitle">Reduce Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        You do not have that amount to reduce!
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Replenish Modal -->
+    <div class="modal fade bd-example-modal-lg" id="replenishItemStockModal" tabindex="-2" role="dialog" aria-labelledby="replenishItemStockModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="replenishItemStockModalTitle">Replenish Stock</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="form-group col-md-6">
+                                <label>Replenish by*</label>
+                                <input class="form-control" name="replenishStockCount" ng-model="data.replenishCount">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" ng-click="replenish()" data-dismiss="modal">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete confirm modal -->
+    <div class="modal fade bd-example-modal-lg" id="deleteItemModal" tabindex="-2" role="dialog" aria-labelledby="deleteItemModal" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="deleteItemModalTitle">Delete Item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body">
+                    Confirm delete?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                    <button type="button" class="btn btn-primary" ng-click="delete()" data-dismiss="modal">Yes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

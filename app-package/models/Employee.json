@@ -1,0 +1,41 @@
+{
+    "timestamps": true,
+    "paranoid": true,
+    "columns": [
+        {
+            "columnName": "id",
+            "columnDataType": "UUID",
+            "isPrimaryKey": true
+        },
+        {
+            "columnName": "EmpID",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpName",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpDep",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpStartDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpEndDate",
+            "columnDataType": "DATEONLY",
+            "isPrimaryKey": false
+        },
+        {
+            "columnName": "EmpContact",
+            "columnDataType": "STRING",
+            "isPrimaryKey": false
+        }
+    ]
+}

@@ -1,0 +1,84 @@
+<script src="web/scripts/collectionAssistPage.js"></script>
+<link href="web/styles/collection.css" rel="stylesheet">
+<%- include('collectionNav'); -%>
+<div id="overlay">
+  <div class="text text-center">
+    <div class="spinner-border" role="status">
+      <span class="sr-only">Loading...</span>
+    </div>
+  </div>
+</div>
+<div class="form-signin" ng-app="collectionAPApp" ng-controller="collectionAPCtrl">
+  <form ng-show="!showAcknowledge && !showSuccess">
+    <h3 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">Help Collect</h3>
+    <span>Search employee and add issued items</span>
+    <div class="form-group">
+      <label for="inputEmpNo" class="sr-only">Employee No.</label>
+      <input type="text" ng-model="inputEmpNo" class="form-control" placeholder="Employee No." autofocus="" ng-change="refreshList()">
+    </div>
+    <div class="form-group" ng-show="showSelection">
+      <select multiple class="form-control" id="empSelection" ng-model="data.multipleSelect">
+        <option ng-repeat="option in data.availableOptions" value="{{option.id}}">{{option.name}}</option>
+      </select>
+      <button type="button" class="btn btn-sm btn-primary btn-block" style="margin-top: 10px;" ng-click="addItems()">Add</button>
+    </div>
+    <hr>
+    <div class="form-group" ng-show="showContinue">
+      <span>Collection List</span>
+      <ul class="list-group list-group-horizontal-xl">
+        <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="(key, value) in data.multipleSelected">
+          <!-- <pre>{{value}}</pre> -->
+          <span ng-bind-html="value | html" style="font-size: 1rem;font-weight: 400;line-height: 1.5;text-align: left;"></span>
+          <a href="#" class="btn btn-danger btn-sm btn-circle" ng-click="deleteItem(key)">
+            <i class="fas fa-minus"></i>
+          </a>
+        </li>
+      </ul>
+      <button type="button" class="btn btn-sm btn-primary btn-block" style="margin-top: 10px;" ng-click="continue()">Continue</button>
+    </div>
+  </form>
+
+  <form ng-show="showAcknowledge && !showSuccess">
+    <h3 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">Assist Collection Acknowledgement</h3>
+    <div class="form-group">
+      <label for="sig-canvas">Acknowledgement</label>
+      <canvas id="sig-canvas" height="160">
+        Browser not supported
+      </canvas>
+    </div>
+    <button type="button" class="btn btn-sm btn-primary mb-6" style="margin-top: 10px;" ng-click="cancelAck()">Cancel</button>
+    <button type="button" class="btn btn-sm btn-primary mb-6" style="margin-top: 10px;" ng-click="clearSignature()">Clear</button>
+    <button type="button" class="btn btn-sm btn-primary mb-6" style="margin-top: 10px;" ng-click="acknowledge()">Acknowledge</button>
+  </form>
+
+  <form ng-show="showAcknowledge && showSuccess">
+    <h3 class="h3 mb-3 font-weight-normal" style="margin-top: 15px;">You may collect the following items for others</h3>
+    <ul class="list-group list-group-horizontal-xl">
+      <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="(key, value) in data.multipleSelected">
+        <!-- <pre>{{value}}</pre> -->
+        <span ng-bind-html="value | html" style="font-size: 1rem;font-weight: 400;line-height: 1.5;text-align: left;"></span>
+      </li>
+    </ul>
+  </form>
+</div>
+
+<!-- Invalid ack modal -->
+<div class="modal fade bd-example-modal-lg" id="invalidAckModal" tabindex="-2" role="dialog" aria-labelledby="invalidAckModal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+          <h5 class="modal-title" id="invalidAckModalTitle">Invalid Acknowledgement</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+          </button>
+          </div>
+          <div class="modal-body">
+              Please sign for Acknowledgement
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">OK</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script src="web/scripts/esign.js"></script>
